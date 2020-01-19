@@ -43,7 +43,7 @@ python -c 'from django.core.management.utils import get_random_secret_key; print
 -   Start the Docker.
 
 ```bash
-docker-composer up -d
+docker-compose up -d
 ```
 
 -   Stop the Docker.
