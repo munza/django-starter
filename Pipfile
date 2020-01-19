@@ -6,9 +6,11 @@ verify_ssl = true
 [dev-packages]
 autopep8 = "*"
 pylint = "*"
+python-dotenv = "*"
 
 [packages]
 django = "*"
+psycopg2-binary = "*"
 
 [requires]
 python_version = "3.7"
