@@ -6,11 +6,12 @@ verify_ssl = true
 [dev-packages]
 autopep8 = "*"
 pylint = "*"
-python-dotenv = "*"
 
 [packages]
 django = "*"
+gunicorn = "*"
 psycopg2-binary = "*"
+django-environ = "*"
 
 [requires]
 python_version = "3.7"

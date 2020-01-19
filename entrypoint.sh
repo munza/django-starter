@@ -13,7 +13,7 @@ fi
 
 
 # Run Gunicorn web server.
-if [ "$GUNICORN_RELOAD" = "true" ]; then
+if [ "$GUNICORN_AUTO_RELOAD" = "true" ]; then
     echo "Gunicorn reload is enabled."
     gunicorn $GUNICORN_APP --chdir ./src --bind "$GUNICORN_HOST:$GUNICORN_PORT" --workers "$GUNICORN_WORKER" --reload;
 else

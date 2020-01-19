@@ -10,28 +10,26 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+import environ
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Load environment variables from dotenv when running in local environment.
-try:
-    from dotenv import load_dotenv
-    load_dotenv(dotenv_path=os.path.join(BASE_DIR, '..', '.env'))
-except ImportError as e:
-    pass
+# Load the environment variables.
+env = environ.Env()
+env.read_env(os.path.join(BASE_DIR, '..', '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('APP_SECRET_KEY', 'somesupersecretkey')
+SECRET_KEY = env('APP_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('APP_DEBUG', 'False').upper() == 'TRUE'
+DEBUG = env('APP_DEBUG')
 
-ALLOWED_HOSTS = os.getenv('APP_ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = env.list('APP_ALLOWED_HOSTS', default=['127.0.0.1'])
 
 
 # Application definition
@@ -102,7 +100,7 @@ DATABASES = {
 }
 
 # Set the default database.
-DATABASES['default'] = DATABASES[os.getenv('DB_CONNECTION', 'sqlite')]
+DATABASES['default'] = DATABASES[env.str('DB_CONNECTION', default='sqlite')]
 
 
 # Password validation
@@ -127,15 +125,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = os.getenv('APP_LANGUAGE_CODE', 'en')
+LANGUAGE_CODE = env.str('APP_LANGUAGE_CODE', default='en')
 
-TIME_ZONE = os.getenv('APP_TIME_ZONE', 'UTC')
+TIME_ZONE = env.str('APP_TIME_ZONE', default='UTC')
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = os.getenv('APP_USE_TZ', 'True').upper() == 'TRUE'
+USE_TZ = env.bool('APP_USE_TZ', default=True)
 
 
 # Static files (CSS, JavaScript, Images)
