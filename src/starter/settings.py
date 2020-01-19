@@ -16,9 +16,11 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Load environment variables from dotenv when running in local environment.
-if os.getenv('APP_ENV', '').upper() is 'LOCAL':
+try:
     from dotenv import load_dotenv
     load_dotenv(dotenv_path=os.path.join(BASE_DIR, '..', '.env'))
+except ImportError as e:
+    pass
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -47,7 +49,7 @@ INSTALLED_APPS = [
     # ...
 
     # Apps
-    # ...
+    'web.apps.WebConfig',
 ]
 
 MIDDLEWARE = [
