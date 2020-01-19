@@ -9,6 +9,9 @@ pylint = "*"
 
 [packages]
 django = "*"
+gunicorn = "*"
+psycopg2-binary = "*"
+django-environ = "*"
 
 [requires]
 python_version = "3.7"

@@ -10,33 +10,44 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
+import environ
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Load the environment variables.
+env = environ.Env()
+env.read_env(os.path.join(BASE_DIR, '..', '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'fz*2qk7y0%&wldes#@gy*!w=sb2h@6+pgp)i(atfju-3p$#c@j'
+SECRET_KEY = env('APP_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('APP_DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list('APP_ALLOWED_HOSTS', default=['127.0.0.1'])
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    # Framework
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Libraries
+    # ...
+
+    # Apps
+    'web.apps.WebConfig',
 ]
 
 MIDDLEWARE = [
@@ -74,11 +85,22 @@ WSGI_APPLICATION = 'starter.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    'sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, os.getenv('DB_DATABASE', 'db.sqlite3')),
+    },
+    'pgsql': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_DATABASE', 'starter'),
+        'USER': os.environ.get('DB_USERNAME', 'postgres'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'postgres'),
+        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
+
+# Set the default database.
+DATABASES['default'] = DATABASES[env.str('DB_CONNECTION', default='sqlite')]
 
 
 # Password validation
@@ -103,18 +125,28 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = env.str('APP_LANGUAGE_CODE', default='en')
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = env.str('APP_TIME_ZONE', default='UTC')
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = env.bool('APP_USE_TZ', default=True)
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, '../static/')
+
+
+# HTTPS configuration
+# Enable this configuration when running a HTTPS server to avoid accidentally
+# serving CSRF and Session cookie when server over just HTTPS.
+# https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/#https
+
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
